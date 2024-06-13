@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import TextBox from "../../components/Textbox";
 
 const ContactForm = () => {
   const [name, setName] = useState("");
@@ -9,30 +10,45 @@ const ContactForm = () => {
     <div>
       <form>
         <div>
-          <label>Name:</label>
-          <input
-            type="text"
+          <TextBox
+            style={{
+              width: "300px",
+              backgroundColor: "#f0f0f0",
+              marginBottom: "20px",
+            }}
+            variant={"outlined"}
             value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
+            type={"text"}
+            label={"Name"}
+            onChangeFunction={(e) => setName(e.target.value)}
           />
         </div>
         <div>
-          <label>Email:</label>
-          <input
-            type="email"
+          <TextBox
+            style={{
+              width: "300px",
+              backgroundColor: "#f0f0f0",
+              marginBottom: "20px",
+            }}
+            variant={"outlined"}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            type={"email"}
+            label={"Email"}
+            onChangeFunction={(e) => setEmail(e.target.value)}
           />
         </div>
         <div>
-          <label>Phone:</label>
-          <input
-            type="tel"
+          <TextBox
+            style={{
+              width: "300px",
+              backgroundColor: "#f0f0f0",
+              marginBottom: "20px",
+            }}
+            variant={"outlined"}
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
+            type={"tel"}
+            onChangeFunction={(e) => setPhone(e.target.value)}
+            label={"Phone Number"}
           />
         </div>
         <button type="submit">Add Contact</button>
