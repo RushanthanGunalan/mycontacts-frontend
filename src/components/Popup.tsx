@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Button, Modal, Grid, Typography } from "@mui/material";
+import { Modal, Grid, Typography } from "@mui/material";
 
 const Popup = ({
   open,
