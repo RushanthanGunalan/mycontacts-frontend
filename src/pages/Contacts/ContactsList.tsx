@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Popup from "../../components/Popup";
 import ContactForm from "./AddContact";
-import { AddIcCallOutlined } from "@mui/icons-material";
+import { AddIcCallOutlined, Phone } from "@mui/icons-material";
 import { Button } from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 function ContactsList() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -15,6 +16,34 @@ function ContactsList() {
     setIsPopupOpen(false);
   };
 
+  const columns: GridColDef[] = [
+    { field: "id", headerName: "ID", width: 100 },
+    { field: "name", headerName: "Name", width: 120 },
+    { field: "email", headerName: "Email", width: 200 },
+    { field: "phone", headerName: "Phone Number", width: 120 },
+  ];
+
+  const rows = [
+    {
+      id: 1,
+      name: "Rushanthan",
+      email: "rushanthan@gmail.com",
+      phone: "0767114320",
+    },
+    {
+      id: 2,
+      name: "Thenujan",
+      email: "thenujan@gmail.com",
+      phone: "0767114320",
+    },
+    {
+      id: 3,
+      name: "Sujanthan",
+      email: "sujanthan@gmail.com",
+      phone: "0767114320",
+    },
+  ];
+
   return (
     <>
       <Button
@@ -25,6 +54,7 @@ function ContactsList() {
       >
         Add Contact
       </Button>
+      <DataGrid columns={columns} rows={rows} />
       {isPopupOpen && (
         <Popup
           open={isPopupOpen}
