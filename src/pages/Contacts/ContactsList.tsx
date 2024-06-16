@@ -1,12 +1,53 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Popup from "../../components/Popup";
 import ContactForm from "./AddContact";
-import { AddIcCallOutlined, Phone } from "@mui/icons-material";
+import { AddIcCallOutlined } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { ContactListJson } from "../../services/ContactServices";
+
+interface Contacts {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+}
 
 function ContactsList() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [contacts, setContacts] = useState<Contacts[]>([]);
+
+  useEffect(() => {
+    getAllContacts();
+  }, []);
+
+  // function getAllContacts() {
+  //   ContactListJson()
+  //     .then((response) => {
+  //       setContacts(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("There was an error fetching the contacts:", error);
+  //       // You can also display an error message to the user if needed
+  //     });
+  // }
+
+  function getAllContacts() {
+    ContactListJson()
+      .then((response) => {
+        const dataWithId = response.data.map((contact: any) => ({
+          id: contact._id,
+          name: contact.name,
+          email: contact.email,
+          phone: contact.phone,
+        }));
+        setContacts(dataWithId);
+      })
+      .catch((error) => {
+        console.error("There was an error fetching the contacts:", error);
+        // You can also display an error message to the user if needed
+      });
+  }
 
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
@@ -23,26 +64,26 @@ function ContactsList() {
     { field: "phone", headerName: "Phone Number", width: 120 },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      name: "Rushanthan",
-      email: "rushanthan@gmail.com",
-      phone: "0767114320",
-    },
-    {
-      id: 2,
-      name: "Thenujan",
-      email: "thenujan@gmail.com",
-      phone: "0767114320",
-    },
-    {
-      id: 3,
-      name: "Sujanthan",
-      email: "sujanthan@gmail.com",
-      phone: "0767114320",
-    },
-  ];
+  // const rows = [
+  //   {
+  //     id: "46476nb473",
+  //     name: "Rushanthan",
+  //     email: "rushanthan@gmail.com",
+  //     phone: "0767114320",
+  //   },
+  //   {
+  //     id: "35346bv535357",
+  //     name: "Thenujan",
+  //     email: "thenujan@gmail.com",
+  //     phone: "0767114320",
+  //   },
+  //   {
+  //     id: "34536357cv3636",
+  //     name: "Sujanthan",
+  //     email: "sujanthan@gmail.com",
+  //     phone: "0767114320",
+  //   },
+  // ];
 
   return (
     <>
@@ -54,7 +95,7 @@ function ContactsList() {
       >
         Add Contact
       </Button>
-      <DataGrid columns={columns} rows={rows} />
+      <DataGrid columns={columns} rows={contacts} />
       {isPopupOpen && (
         <Popup
           open={isPopupOpen}
