@@ -3,7 +3,6 @@ import TextBox from "../../components/Textbox";
 import { Button, Grid } from "@mui/material";
 import { AddIcCallOutlined } from "@mui/icons-material";
 import { AddContactJson } from "../../services/ContactServices";
-import { nanoid } from "nanoid/non-secure";
 
 const ContactForm = ({
   onAdd,
