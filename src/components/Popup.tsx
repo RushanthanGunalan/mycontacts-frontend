@@ -25,6 +25,7 @@ const Popup = ({
       }}
     >
       <Grid
+        container
         direction="column"
         justifyContent="space-between"
         alignItems="stretch"

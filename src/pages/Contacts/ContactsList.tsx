@@ -5,6 +5,7 @@ import { AddIcCallOutlined } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { ContactListJson } from "../../services/ContactServices";
+import { nanoid } from "nanoid/non-secure";
 
 interface Contacts {
   id: string;
@@ -48,6 +49,12 @@ function ContactsList() {
         // You can also display an error message to the user if needed
       });
   }
+
+  const handleAddContact = (newContact: Contacts) => {
+    newContact.id = nanoid(); // Generate a unique ID
+    setContacts((prevContacts) => [...prevContacts, newContact]);
+    getAllContacts();
+  };
 
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
@@ -95,14 +102,20 @@ function ContactsList() {
       >
         Add Contact
       </Button>
-      <DataGrid columns={columns} rows={contacts} />
+      <DataGrid
+        columns={columns}
+        rows={contacts}
+        getRowId={(row) => row.id}
+        autoHeight
+        disableRowSelectionOnClick
+      />
       {isPopupOpen && (
         <Popup
           open={isPopupOpen}
           onClose={handleClosePopup}
           title={"Add Contact"}
         >
-          <ContactForm />
+          <ContactForm onAdd={handleAddContact} onClose={handleClosePopup} />
         </Popup>
       )}
     </>

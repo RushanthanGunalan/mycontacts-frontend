@@ -2,11 +2,35 @@ import { useState } from "react";
 import TextBox from "../../components/Textbox";
 import { Button, Grid } from "@mui/material";
 import { AddIcCallOutlined } from "@mui/icons-material";
+import { AddContactJson } from "../../services/ContactServices";
+import { nanoid } from "nanoid/non-secure";
 
-const ContactForm = () => {
+const ContactForm = ({
+  onAdd,
+  onClose,
+}: {
+  onAdd: (contact: any) => void;
+  onClose: () => void;
+}) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const newContact = {
+      name,
+      email,
+      phone,
+    };
+    try {
+      const addedContact = await AddContactJson(newContact);
+      onAdd(addedContact);
+      onClose();
+    } catch (error) {
+      console.error("Error Adding Contact", error);
+    }
+  };
 
   return (
     <Grid
@@ -18,7 +42,7 @@ const ContactForm = () => {
       }}
     >
       <Grid item xs={12} sm={8} md={6} lg={4}>
-        <form>
+        <form onSubmit={handleSubmit}>
           <Grid container spacing={2} sx={{ justifyContent: "center" }}>
             <Grid item xs={12}>
               <TextBox
