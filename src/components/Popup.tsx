@@ -51,7 +51,17 @@ const Popup = ({
           </div>
         </Grid>
 
-        <Grid item style={{ flex: 1, overflowY: "auto", padding: 20 }}>
+        <Grid
+          item
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflowY: "auto",
+            padding: 20,
+          }}
+        >
           {children}
         </Grid>
       </Grid>

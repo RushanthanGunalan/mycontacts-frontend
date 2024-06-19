@@ -1,8 +1,11 @@
 import axios from "axios";
 
-const Customer_URL = "http://localhost:5001/api/contacts";
+const Contact_URL = "http://localhost:5001/api/contacts";
 
-export const ContactListJson = () => axios.get(Customer_URL);
+export const ContactListJson = () => axios.get(Contact_URL);
 
 export const AddContactJson = (contact: any) =>
-  axios.post(Customer_URL, contact);
+  axios.post(Contact_URL, contact);
+
+export const DeleteContactJson = (id: any) =>
+  axios.delete(`${Contact_URL}/${id}`);

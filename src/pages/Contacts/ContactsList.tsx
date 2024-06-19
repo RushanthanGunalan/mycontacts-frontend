@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import Popup from "../../components/Popup";
 import ContactForm from "./AddContact";
-import { AddIcCallOutlined } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { AddIcCallOutlined, Delete, Edit } from "@mui/icons-material";
+import { Button, IconButton } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { ContactListJson } from "../../services/ContactServices";
+import {
+  ContactListJson,
+  DeleteContactJson,
+} from "../../services/ContactServices";
 import { nanoid } from "nanoid/non-secure";
 
 interface Contacts {
@@ -56,6 +59,18 @@ function ContactsList() {
     getAllContacts();
   };
 
+  const handleDeleteContact = (id: any) => {
+    DeleteContactJson(id)
+      .then(() => {
+        setContacts((prevContacts) =>
+          prevContacts.filter((contact) => contact.id !== id)
+        );
+      })
+      .catch((error) => {
+        console.error("There was an Error Deleting the Contact:", error);
+      });
+  };
+
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
   };
@@ -69,6 +84,21 @@ function ContactsList() {
     { field: "name", headerName: "Name", width: 120 },
     { field: "email", headerName: "Email", width: 200 },
     { field: "phone", headerName: "Phone Number", width: 120 },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 120,
+      renderCell: (params) => (
+        <>
+          <IconButton>
+            <Edit />
+          </IconButton>
+          <IconButton onClick={() => handleDeleteContact(params.row.id)}>
+            <Delete />
+          </IconButton>
+        </>
+      ),
+    },
   ];
 
   // const rows = [
