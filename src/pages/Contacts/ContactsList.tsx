@@ -144,6 +144,7 @@ function ContactsList() {
           open={isPopupOpen}
           onClose={handleClosePopup}
           title={"Add Contact"}
+          customWidth={700}
         >
           <ContactForm onAdd={handleAddContact} onClose={handleClosePopup} />
         </Popup>

@@ -6,11 +6,13 @@ const Popup = ({
   onClose,
   title,
   children,
+  customWidth = 800,
 }: {
   open: boolean;
   onClose: (value: boolean) => void;
   title: string;
   children?: ReactNode;
+  customWidth?: number;
 }) => {
   return (
     <Modal
@@ -30,7 +32,7 @@ const Popup = ({
         justifyContent="space-between"
         alignItems="stretch"
         sx={{
-          width: 800,
+          width: customWidth,
           backgroundColor: "#fff",
           boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
           borderRadius: 2,
