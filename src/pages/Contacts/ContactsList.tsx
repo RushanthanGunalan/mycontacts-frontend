@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Popup from "../../components/Popup";
 import ContactForm from "./AddContact";
 import { AddIcCallOutlined, Delete, Edit } from "@mui/icons-material";
-import { Button, IconButton } from "@mui/material";
+import { Button, Grid, IconButton } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import {
   ContactListJson,
@@ -20,6 +20,8 @@ interface Contacts {
 function ContactsList() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [contacts, setContacts] = useState<Contacts[]>([]);
+  const [isConfirmPopupOpen, setisConfirmPopupOpen] = useState(false);
+  const [ContactToDelete, setContactToDelete] = useState(null);
 
   useEffect(() => {
     getAllContacts();
@@ -60,15 +62,20 @@ function ContactsList() {
   };
 
   const handleDeleteContact = (id: any) => {
-    DeleteContactJson(id)
-      .then(() => {
+    setContactToDelete(id);
+    setisConfirmPopupOpen(true);
+  };
+
+  const ConfirmDeleteContact = () => {
+    if (ContactToDelete) {
+      DeleteContactJson(ContactToDelete).then(() => {
         setContacts((prevContacts) =>
-          prevContacts.filter((contact) => contact.id !== id)
+          prevContacts.filter((contact) => contact.id !== ContactToDelete)
         );
-      })
-      .catch((error) => {
-        console.error("There was an Error Deleting the Contact:", error);
+        setisConfirmPopupOpen(false);
+        setContactToDelete(null);
       });
+    }
   };
 
   const handleOpenPopup = () => {
@@ -77,6 +84,10 @@ function ContactsList() {
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
+  };
+
+  const handleCloseConfirmPopup = () => {
+    setisConfirmPopupOpen(false);
   };
 
   const columns: GridColDef[] = [
@@ -147,6 +158,53 @@ function ContactsList() {
           customWidth={700}
         >
           <ContactForm onAdd={handleAddContact} onClose={handleClosePopup} />
+        </Popup>
+      )}
+      {isConfirmPopupOpen && (
+        <Popup
+          open={isConfirmPopupOpen}
+          onClose={handleCloseConfirmPopup}
+          title={"Delete Contact Confirmation"}
+          customWidth={400}
+        >
+          <Grid container spacing={2}>
+            <Grid
+              item
+              xs={6}
+              style={{ display: "flex", justifyContent: "center" }}
+            >
+              <Button
+                variant={"outlined"}
+                style={{
+                  fontSize: "medium",
+                  borderRadius: "20px",
+                  color: "white",
+                  backgroundColor: "blue",
+                  width: "100%",
+                }}
+                onClick={ConfirmDeleteContact}
+              >
+                Yes
+              </Button>
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              style={{ display: "flex", justifyContent: "center" }}
+            >
+              <Button
+                variant={"outlined"}
+                style={{
+                  fontSize: "medium",
+                  borderRadius: "20px",
+                  width: "100%",
+                }}
+                onClick={handleCloseConfirmPopup}
+              >
+                No
+              </Button>
+            </Grid>
+          </Grid>
         </Popup>
       )}
     </>
