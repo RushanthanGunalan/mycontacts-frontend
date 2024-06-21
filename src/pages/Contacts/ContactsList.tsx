@@ -22,6 +22,7 @@ function ContactsList() {
   const [contacts, setContacts] = useState<Contacts[]>([]);
   const [isConfirmPopupOpen, setisConfirmPopupOpen] = useState(false);
   const [ContactToDelete, setContactToDelete] = useState(null);
+  const [ContactToEdit, setContactToEdit] = useState<Contacts | null>(null);
 
   useEffect(() => {
     getAllContacts();
@@ -78,6 +79,21 @@ function ContactsList() {
     }
   };
 
+  const handleEditContact = (contact: Contacts) => {
+    setContactToEdit(contact);
+    setIsPopupOpen(true);
+  };
+
+  const handleUpdateContact = (updateContact: Contacts) => {
+    setContacts((prevContacts) =>
+      prevContacts.map((contact) =>
+        contact.id === updateContact.id ? updateContact : contact
+      )
+    );
+    setIsPopupOpen(false);
+    setContactToEdit(null);
+  };
+
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
   };
@@ -102,7 +118,7 @@ function ContactsList() {
       renderCell: (params) => (
         <>
           <IconButton>
-            <Edit />
+            <Edit onClick={() => handleEditContact(params.row)} />
           </IconButton>
           <IconButton onClick={() => handleDeleteContact(params.row.id)}>
             <Delete />
@@ -154,10 +170,15 @@ function ContactsList() {
         <Popup
           open={isPopupOpen}
           onClose={handleClosePopup}
-          title={"Add Contact"}
+          title={ContactToEdit ? "Update Contact" : "Add Contact"}
           customWidth={700}
         >
-          <ContactForm onAdd={handleAddContact} onClose={handleClosePopup} />
+          <ContactForm
+            onAdd={handleAddContact}
+            onClose={handleClosePopup}
+            onUpdate={handleUpdateContact}
+            contact={ContactToEdit}
+          />
         </Popup>
       )}
       {isConfirmPopupOpen && (

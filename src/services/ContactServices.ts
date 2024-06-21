@@ -9,3 +9,6 @@ export const AddContactJson = (contact: any) =>
 
 export const DeleteContactJson = (id: any) =>
   axios.delete(`${Contact_URL}/${id}`);
+
+export const UpdateContactJson = (id: any, contact: any) =>
+  axios.put(`${Contact_URL}/${id}`, contact);

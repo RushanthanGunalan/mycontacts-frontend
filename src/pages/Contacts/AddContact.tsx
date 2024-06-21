@@ -2,18 +2,25 @@ import { useState } from "react";
 import TextBox from "../../components/Textbox";
 import { Button, Grid } from "@mui/material";
 import { AddIcCallOutlined } from "@mui/icons-material";
-import { AddContactJson } from "../../services/ContactServices";
+import {
+  AddContactJson,
+  UpdateContactJson,
+} from "../../services/ContactServices";
 
 const ContactForm = ({
   onAdd,
   onClose,
+  onUpdate,
+  contact,
 }: {
   onAdd: (contact: any) => void;
   onClose: () => void;
+  onUpdate: (contact: any) => void;
+  contact: any;
 }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState(contact ? contact.name : "");
+  const [email, setEmail] = useState(contact ? contact.email : "");
+  const [phone, setPhone] = useState(contact ? contact.email : "");
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -22,12 +29,18 @@ const ContactForm = ({
       email,
       phone,
     };
+
     try {
-      const addedContact = await AddContactJson(newContact);
-      onAdd(addedContact);
-      onClose();
+      if (contact) {
+        await UpdateContactJson(contact.id, newContact);
+        onUpdate({ ...newContact, id: contact.id });
+      } else {
+        const addedContact = await AddContactJson(newContact);
+        onAdd(addedContact);
+        onClose();
+      }
     } catch (error) {
-      console.error("Error Adding Contact", error);
+      console.error("Error Adding/Updating Contact", error);
     }
   };
 
@@ -99,7 +112,7 @@ const ContactForm = ({
                 startIcon={<AddIcCallOutlined />}
                 sx={{ fontSize: "medium", borderRadius: "20px" }}
               >
-                Add Contact
+                {contact ? "Update Contact" : "Add Contact"}
               </Button>
             </Grid>
           </Grid>
