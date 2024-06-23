@@ -21,7 +21,7 @@ function ContactsList() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [contacts, setContacts] = useState<Contacts[]>([]);
   const [isConfirmPopupOpen, setisConfirmPopupOpen] = useState(false);
-  const [ContactToDelete, setContactToDelete] = useState(null);
+  const [ContactToDelete, setContactToDelete] = useState<Contacts | null>(null);
   const [ContactToEdit, setContactToEdit] = useState<Contacts | null>(null);
 
   useEffect(() => {
@@ -62,16 +62,19 @@ function ContactsList() {
     getAllContacts();
   };
 
-  const handleDeleteContact = (id: any) => {
-    setContactToDelete(id);
-    setisConfirmPopupOpen(true);
+  const handleDeleteContact = (id: string) => {
+    const contactToDelete = contacts.find((contact) => contact.id === id);
+    if (contactToDelete) {
+      setContactToDelete(contactToDelete);
+      setisConfirmPopupOpen(true);
+    }
   };
 
   const ConfirmDeleteContact = () => {
     if (ContactToDelete) {
-      DeleteContactJson(ContactToDelete).then(() => {
+      DeleteContactJson(ContactToDelete.id).then(() => {
         setContacts((prevContacts) =>
-          prevContacts.filter((contact) => contact.id !== ContactToDelete)
+          prevContacts.filter((contact) => contact.id !== ContactToDelete!.id)
         );
         setisConfirmPopupOpen(false);
         setContactToDelete(null);
@@ -185,7 +188,9 @@ function ContactsList() {
         <Popup
           open={isConfirmPopupOpen}
           onClose={handleCloseConfirmPopup}
-          title={"Delete Contact Confirmation"}
+          title={`Delete Contact ${
+            ContactToDelete ? ContactToDelete.name : ""
+          }?`}
           customWidth={400}
         >
           <Grid container spacing={2}>
