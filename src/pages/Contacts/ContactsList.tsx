@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Popup from "../../components/Popup";
 import ContactForm from "./AddContact";
 import { AddIcCallOutlined, Delete, Edit } from "@mui/icons-material";
-import { Button, Grid, IconButton } from "@mui/material";
+import { Button, Container, Grid, IconButton, TextField } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import {
   ContactListJson,
@@ -24,20 +24,27 @@ function ContactsList() {
   const [ContactToDelete, setContactToDelete] = useState<Contacts | null>(null);
   const [ContactToEdit, setContactToEdit] = useState<Contacts | null>(null);
 
+  //
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filteredContacts, setFilteredContacts] = useState<Contacts[]>([]);
+  //
+
+  //
+  useEffect(() => {
+    setFilteredContacts(
+      contacts.filter(
+        (contact) =>
+          contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          contact.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          contact.phone.includes(searchQuery)
+      )
+    );
+  }, [searchQuery, contacts]);
+  //
+
   useEffect(() => {
     getAllContacts();
   }, []);
-
-  // function getAllContacts() {
-  //   ContactListJson()
-  //     .then((response) => {
-  //       setContacts(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("There was an error fetching the contacts:", error);
-  //       // You can also display an error message to the user if needed
-  //     });
-  // }
 
   function getAllContacts() {
     ContactListJson()
@@ -131,40 +138,59 @@ function ContactsList() {
     },
   ];
 
-  // const rows = [
-  //   {
-  //     id: "46476nb473",
-  //     name: "Rushanthan",
-  //     email: "rushanthan@gmail.com",
-  //     phone: "0767114320",
-  //   },
-  //   {
-  //     id: "35346bv535357",
-  //     name: "Thenujan",
-  //     email: "thenujan@gmail.com",
-  //     phone: "0767114320",
-  //   },
-  //   {
-  //     id: "34536357cv3636",
-  //     name: "Sujanthan",
-  //     email: "sujanthan@gmail.com",
-  //     phone: "0767114320",
-  //   },
-  // ];
+  const rows = [
+    {
+      id: "46476nb473",
+      name: "Rushanthan",
+      email: "rushanthan@gmail.com",
+      phone: "0767114320",
+    },
+    {
+      id: "35346bv535357",
+      name: "Thenujan",
+      email: "thenujan@gmail.com",
+      phone: "0767114320",
+    },
+    {
+      id: "34536357cv3636",
+      name: "Sujanthan",
+      email: "sujanthan@gmail.com",
+      phone: "0767114320",
+    },
+  ];
+
+  //
+  useEffect(() => {
+    setContacts(rows); // Initialize contacts with dummy data
+  }, []);
+  //
 
   return (
     <>
-      <Button
-        variant={"outlined"}
-        startIcon={<AddIcCallOutlined />}
-        style={{ fontSize: "medium", borderRadius: "20px" }}
-        onClick={handleOpenPopup}
-      >
-        Add Contact
-      </Button>
+      {/* //Container and Text Field */}
+      <Container style={{ marginBottom: "20px" }}>
+        <TextField
+          label="Search"
+          variant="outlined"
+          fullWidth
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ marginBottom: "20px" }}
+        />
+        <Button
+          variant={"outlined"}
+          startIcon={<AddIcCallOutlined />}
+          style={{ fontSize: "medium", borderRadius: "20px" }}
+          onClick={handleOpenPopup}
+        >
+          Add Contact
+        </Button>
+      </Container>
+      {/* // */}
       <DataGrid
         columns={columns}
-        rows={contacts}
+        // rows={contacts}//Uncomment when dealing with actual data
+        rows={filteredContacts}
         getRowId={(row) => row.id}
         autoHeight
         disableRowSelectionOnClick
