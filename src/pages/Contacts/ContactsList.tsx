@@ -24,12 +24,12 @@ function ContactsList() {
   const [ContactToDelete, setContactToDelete] = useState<Contacts | null>(null);
   const [ContactToEdit, setContactToEdit] = useState<Contacts | null>(null);
 
-  //
+  //temp
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredContacts, setFilteredContacts] = useState<Contacts[]>([]);
-  //
+  //temp
 
-  //
+  //temp
   useEffect(() => {
     setFilteredContacts(
       contacts.filter(
@@ -40,7 +40,7 @@ function ContactsList() {
       )
     );
   }, [searchQuery, contacts]);
-  //
+  //temp
 
   useEffect(() => {
     getAllContacts();
@@ -138,6 +138,7 @@ function ContactsList() {
     },
   ];
 
+  //temp
   const rows = [
     {
       id: "46476nb473",
@@ -158,17 +159,20 @@ function ContactsList() {
       phone: "0767114320",
     },
   ];
+  //temp
 
-  //
+  //temp
   useEffect(() => {
     setContacts(rows); // Initialize contacts with dummy data
   }, []);
-  //
+  //temp
 
   return (
     <>
       {/* //Container and Text Field */}
+
       <Container style={{ marginBottom: "20px" }}>
+        {/* temp */}
         <TextField
           label="Search"
           variant="outlined"
@@ -177,6 +181,7 @@ function ContactsList() {
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{ marginBottom: "20px" }}
         />
+        {/* temp */}
         <Button
           variant={"outlined"}
           startIcon={<AddIcCallOutlined />}
