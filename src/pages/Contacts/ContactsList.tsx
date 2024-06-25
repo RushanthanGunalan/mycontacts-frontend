@@ -5,6 +5,7 @@ import { AddIcCallOutlined, Delete, Edit } from "@mui/icons-material";
 import { Button, Container, Grid, IconButton, TextField } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import {
+  AddContactJson,
   ContactListJson,
   DeleteContactJson,
 } from "../../services/ContactServices";
@@ -24,12 +25,9 @@ function ContactsList() {
   const [ContactToDelete, setContactToDelete] = useState<Contacts | null>(null);
   const [ContactToEdit, setContactToEdit] = useState<Contacts | null>(null);
 
-  //temp
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredContacts, setFilteredContacts] = useState<Contacts[]>([]);
-  //temp
 
-  //temp
   useEffect(() => {
     setFilteredContacts(
       contacts.filter(
@@ -40,7 +38,6 @@ function ContactsList() {
       )
     );
   }, [searchQuery, contacts]);
-  //temp
 
   useEffect(() => {
     getAllContacts();
@@ -65,7 +62,15 @@ function ContactsList() {
 
   const handleAddContact = (newContact: Contacts) => {
     newContact.id = nanoid(); // Generate a unique ID
-    setContacts((prevContacts) => [...prevContacts, newContact]);
+    AddContactJson(newContact)
+      .then(() => {
+        setContacts((prevContacts) => [...prevContacts, newContact]);
+        // Optionally, fetch all contacts again to ensure consistency
+      })
+      .catch((error) => {
+        console.error("Error adding contact:", error);
+        // Handle error appropriately (e.g., show error message)
+      });
     getAllContacts();
   };
 
@@ -139,32 +144,32 @@ function ContactsList() {
   ];
 
   //temp
-  const rows = [
-    {
-      id: "46476nb473",
-      name: "Rushanthan",
-      email: "rushanthan@gmail.com",
-      phone: "0767114320",
-    },
-    {
-      id: "35346bv535357",
-      name: "Thenujan",
-      email: "thenujan@gmail.com",
-      phone: "0767114320",
-    },
-    {
-      id: "34536357cv3636",
-      name: "Sujanthan",
-      email: "sujanthan@gmail.com",
-      phone: "0767114320",
-    },
-  ];
+  // const rows = [
+  //   {
+  //     id: "46476nb473",
+  //     name: "Rushanthan",
+  //     email: "rushanthan@gmail.com",
+  //     phone: "0767114320",
+  //   },
+  //   {
+  //     id: "35346bv535357",
+  //     name: "Thenujan",
+  //     email: "thenujan@gmail.com",
+  //     phone: "0767114320",
+  //   },
+  //   {
+  //     id: "34536357cv3636",
+  //     name: "Sujanthan",
+  //     email: "sujanthan@gmail.com",
+  //     phone: "0767114320",
+  //   },
+  // ];
   //temp
 
   //temp
-  useEffect(() => {
-    setContacts(rows); // Initialize contacts with dummy data
-  }, []);
+  // useEffect(() => {
+  //   setContacts(rows); // Initialize contacts with dummy data
+  // }, []);
   //temp
 
   return (
@@ -194,7 +199,6 @@ function ContactsList() {
       {/* // */}
       <DataGrid
         columns={columns}
-        // rows={contacts}//Uncomment when dealing with actual data
         rows={filteredContacts}
         getRowId={(row) => row.id}
         autoHeight
