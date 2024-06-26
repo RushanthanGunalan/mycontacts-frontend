@@ -2,7 +2,15 @@ import { useEffect, useState } from "react";
 import Popup from "../../components/Popup";
 import ContactForm from "./AddContact";
 import { AddIcCallOutlined, Delete, Edit } from "@mui/icons-material";
-import { Button, Container, Grid, IconButton, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  Container,
+  Grid,
+  IconButton,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import {
   AddContactJson,
@@ -178,14 +186,21 @@ function ContactsList() {
 
       <Container style={{ marginBottom: "20px" }}>
         {/* temp */}
-        <TextField
-          label="Search"
-          variant="outlined"
-          fullWidth
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ marginBottom: "20px" }}
-        />
+        <Stack spacing={2} sx={{ width: 300 }}>
+          <Autocomplete
+            freeSolo
+            options={contacts.map((option) => option.name)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Search input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            )}
+          />
+        </Stack>
+
         {/* temp */}
         <Button
           variant={"outlined"}
