@@ -33,19 +33,15 @@ function ContactsList() {
   const [ContactToDelete, setContactToDelete] = useState<Contacts | null>(null);
   const [ContactToEdit, setContactToEdit] = useState<Contacts | null>(null);
 
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [filteredContacts, setFilteredContacts] = useState<Contacts[]>([]);
+  const [nameQuery, setNameQuery] = useState<string>("");
+  const [emailQuery, setEmailQuery] = useState<string>("");
 
-  useEffect(() => {
-    setFilteredContacts(
-      contacts.filter(
-        (contact) =>
-          contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          contact.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          contact.phone.includes(searchQuery)
-      )
-    );
-  }, [searchQuery, contacts]);
+  // Filtered contacts based on both queries
+  const filteredContacts = contacts.filter(
+    (contact) =>
+      contact.name.toLowerCase().includes(nameQuery.toLowerCase()) &&
+      contact.email.toLowerCase().includes(emailQuery.toLowerCase())
+  );
 
   useEffect(() => {
     getAllContacts();
@@ -186,20 +182,36 @@ function ContactsList() {
 
       <Container style={{ marginBottom: "20px" }}>
         {/* temp */}
-        <Stack spacing={2} sx={{ width: 300 }}>
-          <Autocomplete
-            freeSolo
-            options={contacts.map((option) => option.name)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Search input"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Stack spacing={2} sx={{ width: 300 }}>
+              <Autocomplete
+                freeSolo
+                options={contacts.map((contact) => contact.name)}
+                onInputChange={(event, newValue) => {
+                  setNameQuery(newValue ?? "");
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Search by Name" />
+                )}
               />
-            )}
-          />
-        </Stack>
+            </Stack>
+          </Grid>
+          <Grid item xs={6}>
+            <Stack spacing={2} sx={{ width: 300 }}>
+              <Autocomplete
+                freeSolo
+                options={contacts.map((contact) => contact.email)}
+                onInputChange={(event, newValue) => {
+                  setEmailQuery(newValue ?? "");
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Search By Email" />
+                )}
+              />
+            </Stack>
+          </Grid>
+        </Grid>
 
         {/* temp */}
         <Button
