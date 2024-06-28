@@ -180,49 +180,59 @@ function ContactsList() {
     <>
       {/* //Container and Text Field */}
 
-      <Container style={{ marginBottom: "20px" }}>
-        {/* temp */}
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Stack spacing={2} sx={{ width: 300 }}>
-              <Autocomplete
-                freeSolo
-                options={contacts.map((contact) => contact.name)}
-                onInputChange={(event, newValue) => {
-                  setNameQuery(newValue ?? "");
-                }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Search by Name" />
-                )}
-              />
-            </Stack>
-          </Grid>
-          <Grid item xs={6}>
-            <Stack spacing={2} sx={{ width: 300 }}>
-              <Autocomplete
-                freeSolo
-                options={contacts.map((contact) => contact.email)}
-                onInputChange={(event, newValue) => {
-                  setEmailQuery(newValue ?? "");
-                }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Search By Email" />
-                )}
-              />
-            </Stack>
-          </Grid>
+      <Grid
+        container
+        style={{
+          border: "1px solid black",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Grid item xs={4}>
+          <Stack sx={{ width: 300 }}>
+            <Autocomplete
+              freeSolo
+              options={contacts.map((contact) => contact.name)}
+              onInputChange={(event, newValue) => {
+                setNameQuery(newValue ?? "");
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Search by Name" />
+              )}
+            />
+          </Stack>
+        </Grid>
+        <Grid item xs={6}>
+          <Stack sx={{ width: 300 }}>
+            <Autocomplete
+              freeSolo
+              options={contacts.map((contact) => contact.email)}
+              onInputChange={(event, newValue) => {
+                setEmailQuery(newValue ?? "");
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Search By Email" />
+              )}
+            />
+          </Stack>
         </Grid>
 
-        {/* temp */}
-        <Button
-          variant={"outlined"}
-          startIcon={<AddIcCallOutlined />}
-          style={{ fontSize: "medium", borderRadius: "20px" }}
-          onClick={handleOpenPopup}
+        <Grid
+          item
+          xs={2}
+          style={{ justifyContent: "center", alignItems: "center" }}
         >
-          Add Contact
-        </Button>
-      </Container>
+          <Button
+            variant={"outlined"}
+            startIcon={<AddIcCallOutlined />}
+            style={{ fontSize: "medium", borderRadius: "20px" }}
+            onClick={handleOpenPopup}
+          >
+            Add Contact
+          </Button>
+        </Grid>
+      </Grid>
+
       {/* // */}
       <DataGrid
         columns={columns}

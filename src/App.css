@@ -1,3 +1,93 @@
+/* index.css */
+
+/* CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%; /* 16px */
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  color: #333333;
+}
+
+/* Basic styles for common elements */
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Form elements */
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: 1.15;
+  margin: 0;
+}
+
+/* Basic styles for navigation */
+nav {
+  display: flex;
+  gap: 1rem;
+  background: #f0f0f0;
+  padding: 1rem;
+}
+
+/* Basic styles for form elements */
+input {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+button {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
+.visible {
+  display: block !important;
+}
+
+/* Styles from App.css */
 #root {
   max-width: 1280px;
   margin: 0 auto;
