@@ -1,4 +1,4 @@
-import { Snackbar, SnackbarOrigin } from "@mui/material";
+import { Snackbar } from "@mui/material";
 
 const CustomSnackBar = ({
   open,

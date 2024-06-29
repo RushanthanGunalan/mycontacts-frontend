@@ -5,7 +5,6 @@ import { AddIcCallOutlined, Delete, Edit } from "@mui/icons-material";
 import {
   Autocomplete,
   Button,
-  Container,
   Grid,
   IconButton,
   Stack,
@@ -228,7 +227,7 @@ function ContactsList() {
             <Autocomplete
               freeSolo
               options={contacts.map((contact) => contact.name)}
-              onInputChange={(event, newValue) => {
+              onInputChange={(_event, newValue) => {
                 setNameQuery(newValue ?? "");
               }}
               renderInput={(params) => (
@@ -242,7 +241,7 @@ function ContactsList() {
             <Autocomplete
               freeSolo
               options={contacts.map((contact) => contact.email)}
-              onInputChange={(event, newValue) => {
+              onInputChange={(_event, newValue) => {
                 setEmailQuery(newValue ?? "");
               }}
               renderInput={(params) => (
