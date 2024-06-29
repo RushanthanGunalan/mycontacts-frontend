@@ -18,6 +18,7 @@ import {
   DeleteContactJson,
 } from "../../services/ContactServices";
 import { nanoid } from "nanoid/non-secure";
+import CustomSnackBar from "../../components/SnackBar";
 
 interface Contacts {
   id: string;
@@ -35,6 +36,11 @@ function ContactsList() {
 
   const [nameQuery, setNameQuery] = useState<string>("");
   const [emailQuery, setEmailQuery] = useState<string>("");
+
+  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   // Filtered contacts based on both queries
   const filteredContacts = contacts.filter(
@@ -69,15 +75,39 @@ function ContactsList() {
     AddContactJson(newContact)
       .then(() => {
         setContacts((prevContacts) => [...prevContacts, newContact]);
+        setSnackbarOpen(true);
+        setSnackbarMessage("Contact Successfully Added");
         // Optionally, fetch all contacts again to ensure consistency
       })
       .catch((error) => {
         console.error("Error adding contact:", error);
+
         // Handle error appropriately (e.g., show error message)
       });
     getAllContacts();
   };
 
+  const DeleteMultiContacts = () => {
+    if (selectedContacts.length > 0) {
+      Promise.all(selectedContacts.map((id) => DeleteContactJson(id)))
+        .then(() => {
+          setContacts((prevContacts) =>
+            prevContacts.filter(
+              (contact) => !selectedContacts.includes(contact.id)
+            )
+          );
+          setSelectedContacts([]);
+          setSnackbarOpen(true);
+          setSnackbarMessage("Contacts Successfully Deleted");
+        })
+        .catch((error) => {
+          console.error("Error deleting contacts:", error);
+          setSnackbarMessage("Error Deleting Contacts");
+          setSnackbarOpen(true);
+          // Show error message to user
+        });
+    }
+  };
   const handleDeleteContact = (id: string) => {
     const contactToDelete = contacts.find((contact) => contact.id === id);
     if (contactToDelete) {
@@ -94,6 +124,8 @@ function ContactsList() {
         );
         setisConfirmPopupOpen(false);
         setContactToDelete(null);
+        setSnackbarMessage("Successfully Deleted");
+        setSnackbarOpen(true);
       });
     }
   };
@@ -111,6 +143,8 @@ function ContactsList() {
     );
     setIsPopupOpen(false);
     setContactToEdit(null);
+    setSnackbarMessage("Contacts Successfully Updated");
+    setSnackbarOpen(true);
   };
 
   const handleOpenPopup = () => {
@@ -186,10 +220,11 @@ function ContactsList() {
           border: "1px solid black",
           display: "flex",
           alignItems: "center",
+          padding: "20px",
         }}
       >
-        <Grid item xs={4}>
-          <Stack sx={{ width: 300 }}>
+        <Grid item xs={3}>
+          <Stack sx={{ width: 300, padding: "10px" }}>
             <Autocomplete
               freeSolo
               options={contacts.map((contact) => contact.name)}
@@ -202,8 +237,8 @@ function ContactsList() {
             />
           </Stack>
         </Grid>
-        <Grid item xs={6}>
-          <Stack sx={{ width: 300 }}>
+        <Grid item xs={5}>
+          <Stack sx={{ width: 300, padding: "10px" }}>
             <Autocomplete
               freeSolo
               options={contacts.map((contact) => contact.email)}
@@ -231,6 +266,32 @@ function ContactsList() {
             Add Contact
           </Button>
         </Grid>
+        {selectedContacts.length > 0 ? (
+          <Grid item xs={2}>
+            <Button
+              variant={"outlined"}
+              style={{ fontSize: "medium", borderRadius: "20px" }}
+              onClick={DeleteMultiContacts}
+            >
+              Delete Selected
+            </Button>
+          </Grid>
+        ) : (
+          <Grid item xs={2}>
+            <Button
+              variant={"outlined"}
+              style={{
+                fontSize: "medium",
+                borderRadius: "20px",
+                pointerEvents: "none", // Disable pointer events
+                opacity: 0.5, // Reduce opacity for disabled look
+              }}
+              disabled
+            >
+              Delete Selected
+            </Button>
+          </Grid>
+        )}
       </Grid>
 
       {/* // */}
@@ -240,6 +301,10 @@ function ContactsList() {
         getRowId={(row) => row.id}
         autoHeight
         disableRowSelectionOnClick
+        checkboxSelection
+        onRowSelectionModelChange={(ids) => {
+          setSelectedContacts(ids as string[]);
+        }}
       />
       {isPopupOpen && (
         <Popup
@@ -305,6 +370,13 @@ function ContactsList() {
           </Grid>
         </Popup>
       )}
+      <CustomSnackBar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        onClose={() => setSnackbarOpen(false)}
+        duration={3000}
+        position={{ vertical: "top", horizontal: "right" }}
+      />
     </>
   );
 }
