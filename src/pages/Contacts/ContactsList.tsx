@@ -5,10 +5,13 @@ import { AddIcCallOutlined, Delete, Edit } from "@mui/icons-material";
 import {
   Autocomplete,
   Button,
+  Card,
+  CardContent,
   Grid,
   IconButton,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import {
@@ -18,6 +21,7 @@ import {
 } from "../../services/ContactServices";
 import { nanoid } from "nanoid/non-secure";
 import CustomSnackBar from "../../components/SnackBar";
+import { Card as JoyCard } from "@mui/joy";
 
 interface Contacts {
   id: string;
@@ -40,6 +44,9 @@ function ContactsList() {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const [contactDetails, SetContactDetails] = useState<Contacts | null>(null);
+  const [isDetailPopupOpen, setIsDetailPopupOpen] = useState(false); //Temporary
 
   // Filtered contacts based on both queries
   const filteredContacts = contacts.filter(
@@ -158,6 +165,25 @@ function ContactsList() {
     setisConfirmPopupOpen(false);
   };
 
+  const handleRowClick = (params: any) => {
+    const contact = contacts.find((contact) => contact.id == params.row.id);
+    if (contact) {
+      SetContactDetails(contact);
+      setIsDetailPopupOpen(true); // Open the detail popup
+    }
+  };
+
+  //Temporary
+  const handleOpenDetailPopup = () => {
+    setIsDetailPopupOpen(true);
+  };
+
+  const handleCloseDetailPopup = () => {
+    setIsDetailPopupOpen(false);
+    SetContactDetails(null);
+  };
+  //Temporary
+
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 100 },
     { field: "name", headerName: "Name", width: 120 },
@@ -212,7 +238,6 @@ function ContactsList() {
   return (
     <>
       {/* //Container and Text Field */}
-
       <Grid
         container
         style={{
@@ -292,7 +317,6 @@ function ContactsList() {
           </Grid>
         )}
       </Grid>
-
       {/* // */}
       <DataGrid
         columns={columns}
@@ -304,6 +328,7 @@ function ContactsList() {
         onRowSelectionModelChange={(ids) => {
           setSelectedContacts(ids as string[]);
         }}
+        onRowClick={handleRowClick}
       />
       {isPopupOpen && (
         <Popup
@@ -369,6 +394,26 @@ function ContactsList() {
           </Grid>
         </Popup>
       )}
+      {/* //Temporary */}
+      {isDetailPopupOpen && (
+        <Popup
+          open={isDetailPopupOpen}
+          onClose={handleCloseDetailPopup}
+          title="Contact Details"
+          customWidth={400}
+        >
+          <Card>
+            <CardContent>
+              <Typography variant="h5">{contactDetails?.name}</Typography>
+              <Typography variant="subtitle1">
+                {contactDetails?.email}
+              </Typography>
+              <Typography variant="body1">{contactDetails?.phone}</Typography>
+            </CardContent>
+          </Card>
+        </Popup>
+      )}
+      {/* //Temporary */}
       <CustomSnackBar
         open={snackbarOpen}
         message={snackbarMessage}
