@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   CardContent,
+  CardMedia,
   Grid,
   IconButton,
   Stack,
@@ -21,7 +22,7 @@ import {
 } from "../../services/ContactServices";
 import { nanoid } from "nanoid/non-secure";
 import CustomSnackBar from "../../components/SnackBar";
-import { Card as JoyCard } from "@mui/joy";
+import Profile from "../../assets/Profile.png";
 
 interface Contacts {
   id: string;
@@ -174,9 +175,6 @@ function ContactsList() {
   };
 
   //Temporary
-  const handleOpenDetailPopup = () => {
-    setIsDetailPopupOpen(true);
-  };
 
   const handleCloseDetailPopup = () => {
     setIsDetailPopupOpen(false);
@@ -400,9 +398,15 @@ function ContactsList() {
           open={isDetailPopupOpen}
           onClose={handleCloseDetailPopup}
           title="Contact Details"
-          customWidth={400}
+          customWidth={500}
         >
           <Card>
+            <CardMedia
+              component="img"
+              image={Profile} // Replace this with your fixed image URL
+              alt="Contact Image"
+              style={{ height: 300 }}
+            />
             <CardContent>
               <Typography variant="h5">{contactDetails?.name}</Typography>
               <Typography variant="subtitle1">
