@@ -6,6 +6,7 @@ import {
   AddContactJson,
   UpdateContactJson,
 } from "../../services/ContactServices";
+import ImagePicker from "../../components/ImagePicker";
 
 const ContactForm = ({
   onAdd,
@@ -21,6 +22,11 @@ const ContactForm = ({
   const [name, setName] = useState(contact ? contact.name : "");
   const [email, setEmail] = useState(contact ? contact.email : "");
   const [phone, setPhone] = useState(contact ? contact.email : "");
+  const [image, setImage] = useState<File | null>(null);
+
+  const handleImageUpload = (file: File | null) => {
+    setImage(file);
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -28,6 +34,7 @@ const ContactForm = ({
       name,
       email,
       phone,
+      image,
     };
 
     try {
@@ -114,6 +121,12 @@ const ContactForm = ({
               >
                 {contact ? "Update Contact" : "Add Contact"}
               </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <ImagePicker
+                onImageUpload={handleImageUpload}
+                initialImage={contact?.imageUrl}
+              />
             </Grid>
           </Grid>
         </form>
