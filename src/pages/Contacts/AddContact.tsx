@@ -107,6 +107,12 @@ const ContactForm = ({
                 label={"Phone Number"}
               />
             </Grid>
+            <Grid item xs={12}>
+              <ImagePicker
+                onImageUpload={handleImageUpload}
+                initialImage={contact?.imageUrl}
+              />
+            </Grid>
 
             <Grid
               item
@@ -121,12 +127,6 @@ const ContactForm = ({
               >
                 {contact ? "Update Contact" : "Add Contact"}
               </Button>
-            </Grid>
-            <Grid item xs={12}>
-              <ImagePicker
-                onImageUpload={handleImageUpload}
-                initialImage={contact?.imageUrl}
-              />
             </Grid>
           </Grid>
         </form>

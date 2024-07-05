@@ -46,32 +46,39 @@ const ImagePicker = ({
   };
 
   return (
-    <Box>
-      <Box {...getRootProps()} sx={styles.dropzone}>
-        <input {...getInputProps()} />
-        <CloudUploadIcon sx={{ fontSize: 50 }} />
-        <Typography>
-          Drag & drop an image here, or click to select one
-        </Typography>
-      </Box>
-      {imagePreview && (
-        <Box sx={styles.previewContainer}>
+    <Box sx={styles.container}>
+      <Box sx={styles.dropzoneContainer}>
+        <IconButton onClick={handleDeleteImage} sx={styles.deleteButton}>
+          <DeleteIcon />
+        </IconButton>
+        {!imagePreview ? (
+          <Box {...getRootProps()} sx={styles.dropzone}>
+            <input {...getInputProps()} />
+            <CloudUploadIcon sx={{ fontSize: 50 }} />
+            <Typography>
+              Drag & drop an image here, or click to select one
+            </Typography>
+          </Box>
+        ) : (
           <img
             src={imagePreview}
             alt="Image Preview"
             style={styles.imagePreview}
           />
-          <IconButton onClick={handleDeleteImage} sx={styles.deleteButton}>
-            <DeleteIcon />
-          </IconButton>
-        </Box>
-      )}
+        )}
+      </Box>
     </Box>
   );
 };
 
 const styles = {
-  dropzone: {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  dropzoneContainer: {
+    position: "relative",
     border: "2px dashed #cccccc",
     borderRadius: "4px",
     padding: "20px",
@@ -81,16 +88,20 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: "20px",
+    width: "500px",
+    height: "300px",
   },
-  previewContainer: {
-    marginTop: "20px",
-    textAlign: "center",
-    position: "relative",
+  dropzone: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%",
   },
   imagePreview: {
     maxWidth: "100%",
-    maxHeight: "200px",
+    maxHeight: "100%",
     borderRadius: "4px",
   },
   deleteButton: {
