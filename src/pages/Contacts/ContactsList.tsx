@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import Popup from "../../components/Popup";
 import ContactForm from "./AddContact";
-import { AddIcCallOutlined, Delete, Edit } from "@mui/icons-material";
+import {
+  AddIcCallOutlined,
+  Delete,
+  Edit,
+  Visibility,
+} from "@mui/icons-material";
 import {
   Autocomplete,
   Button,
@@ -166,12 +171,9 @@ function ContactsList() {
     setisConfirmPopupOpen(false);
   };
 
-  const handleRowClick = (params: any) => {
-    const contact = contacts.find((contact) => contact.id == params.row.id);
-    if (contact) {
-      SetContactDetails(contact);
-      setIsDetailPopupOpen(true); // Open the detail popup
-    }
+  const viewSingleContact = (contact: Contacts) => {
+    SetContactDetails(contact);
+    setIsDetailPopupOpen(true); // Open the detail popup
   };
 
   //Temporary
@@ -190,13 +192,19 @@ function ContactsList() {
     {
       field: "actions",
       headerName: "Actions",
-      width: 120,
+      width: 150,
       renderCell: (params) => (
         <>
-          <IconButton>
+          <IconButton disabled={selectedContacts.length > 0}>
+            <Visibility onClick={() => viewSingleContact(params.row)} />
+          </IconButton>
+          <IconButton disabled={selectedContacts.length > 0}>
             <Edit onClick={() => handleEditContact(params.row)} />
           </IconButton>
-          <IconButton onClick={() => handleDeleteContact(params.row.id)}>
+          <IconButton
+            onClick={() => handleDeleteContact(params.row.id)}
+            disabled={selectedContacts.length > 0}
+          >
             <Delete />
           </IconButton>
         </>
@@ -326,7 +334,6 @@ function ContactsList() {
         onRowSelectionModelChange={(ids) => {
           setSelectedContacts(ids as string[]);
         }}
-        onRowClick={handleRowClick}
       />
       {isPopupOpen && (
         <Popup
