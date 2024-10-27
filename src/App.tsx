@@ -1,26 +1,41 @@
+// App.tsx
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { Tabs, Tab } from "@mui/material";
+import { useState } from "react";
 import "./App.css";
 import ContactsList from "./pages/Contacts/ContactsList";
 
+// Dummy Home component for the default route
+const Home = () => <h1>Home Page Content</h1>;
+const ContactDetail = () => <h1>Contact Detail Page Content</h1>;
+
 function App() {
+  const [value, setValue] = useState(0); // Track the selected tab
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
   return (
     <Router>
       <div className="app">
-        <aside className="sidebar">
-          <nav className="nav">
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/contacts">Contacts</Link>
-              </li>
-              <li>
-                <Link to="/contactsDetail">Contacts Details</Link>
-              </li>
-            </ul>
-          </nav>
-        </aside>
+        <div className="tabs-container">
+          <Tabs
+            orientation="vertical" // Set the orientation to vertical
+            value={value}
+            onChange={handleChange}
+            aria-label="vertical tabs example"
+            sx={{ borderRight: 1, borderColor: "divider" }}
+          >
+            <Tab label="Home" component={Link} to="/" />
+            <Tab label="Contacts" component={Link} to="/contacts" />
+            <Tab
+              label="Contacts Details"
+              component={Link}
+              to="/contactsDetail"
+            />
+          </Tabs>
+        </div>
 
         <main className="content">
           <Routes>
@@ -33,9 +48,5 @@ function App() {
     </Router>
   );
 }
-
-// Dummy Home component for the default route
-const Home = () => <h1>Home page Content</h1>;
-const ContactDetail = () => <h1>Contact Detail Page Content</h1>;
 
 export default App;
