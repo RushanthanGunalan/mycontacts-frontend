@@ -4,10 +4,10 @@ import { Tabs, Tab } from "@mui/material";
 import { useState } from "react";
 import "./App.css";
 import ContactsList from "./pages/Contacts/ContactsList";
+import CardDetail from "./pages/Contacts/CardDetails";
 
 // Dummy Home component for the default route
 const Home = () => <h1>Home Page Content</h1>;
-const ContactDetail = () => <h1>Contact Detail Page Content</h1>;
 
 function App() {
   const [value, setValue] = useState(0); // Track the selected tab
@@ -41,7 +41,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/contacts" element={<ContactsList />} />
-            <Route path="/contactsDetail" element={<ContactDetail />} />
+            <Route path="/contactsDetail" element={<CardDetail />} />
           </Routes>
         </main>
       </div>
