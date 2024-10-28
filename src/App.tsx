@@ -12,7 +12,7 @@ const Home = () => <h1>Home Page Content</h1>;
 function App() {
   const [value, setValue] = useState(0); // Track the selected tab
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
