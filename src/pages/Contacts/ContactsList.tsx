@@ -185,10 +185,10 @@ function ContactsList() {
   //Temporary
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "name", headerName: "Name", width: 120 },
-    { field: "email", headerName: "Email", width: 200 },
-    { field: "phone", headerName: "Phone Number", width: 120 },
+    { field: "id", headerName: "ID", width: 10 },
+    { field: "name", headerName: "Name", width: 200 },
+    { field: "email", headerName: "Email", width: 210 },
+    { field: "phone", headerName: "Phone Number", width: 160 },
     {
       field: "actions",
       headerName: "Actions",

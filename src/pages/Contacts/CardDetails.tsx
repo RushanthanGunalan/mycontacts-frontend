@@ -1,7 +1,18 @@
-import { Card, CardContent, CardMedia, Typography, Grid } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Grid,
+  Button,
+} from "@mui/material";
 import Profile from "../../assets/Profile.png";
 import { useEffect, useState } from "react";
 import { ContactListJson } from "../../services/ContactServices";
+import CustomButton from "../../components/Button";
+import Popup from "../../components/Popup";
+import ContactForm from "./AddContact";
+import CustomSnackBar from "../../components/SnackBar";
 
 interface Contacts {
   id: string;
@@ -12,6 +23,11 @@ interface Contacts {
 
 function CardDetail() {
   const [contacts, setContacts] = useState<Contacts[]>([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [ContactToEdit, setContactToEdit] = useState<Contacts | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
     getAllContacts();
@@ -33,6 +49,31 @@ function CardDetail() {
         // You can also display an error message to the user if needed
       });
   }
+
+  const handleEditContact = (contact: Contacts) => {
+    setContactToEdit(contact);
+    setIsPopupOpen(true);
+  };
+
+  const handleUpdateContact = (updateContact: Contacts) => {
+    setContacts((prevContacts) =>
+      prevContacts.map((contact) =>
+        contact.id === updateContact.id ? updateContact : contact
+      )
+    );
+    setIsPopupOpen(false);
+    setContactToEdit(null);
+    setSnackbarMessage("Contacts Successfully Updated");
+    setSnackbarOpen(true);
+  };
+
+  const handleOpenPopup = () => {
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+  };
 
   return (
     <Grid container spacing={2} style={{ padding: "20px" }}>
@@ -58,9 +99,38 @@ function CardDetail() {
                 Email: {contact.email}
               </Typography>
             </CardContent>
+            <CustomButton
+              variant={"text"}
+              buttonText={"Edit"}
+              buttonClick={() => handleEditContact(contact)} // Pass the contact object when the button is clicked
+            />
           </Card>
         </Grid>
       ))}
+      {isPopupOpen && (
+        <Popup
+          open={isPopupOpen}
+          onClose={handleClosePopup}
+          title={ContactToEdit ? "Update Contact" : "Add Contact"}
+          customWidth={700}
+        >
+          <ContactForm
+            onClose={handleClosePopup}
+            onUpdate={handleUpdateContact}
+            contact={ContactToEdit}
+            onAdd={function (contact: any): void {
+              throw new Error("Function not implemented.");
+            }}
+          />
+        </Popup>
+      )}
+      <CustomSnackBar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        onClose={() => setSnackbarOpen(false)}
+        duration={3000}
+        position={{ vertical: "top", horizontal: "right" }}
+      />
     </Grid>
   );
 }
