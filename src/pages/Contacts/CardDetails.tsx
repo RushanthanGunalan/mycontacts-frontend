@@ -8,7 +8,10 @@ import {
 } from "@mui/material";
 import Profile from "../../assets/Profile.png";
 import { useEffect, useState } from "react";
-import { ContactListJson } from "../../services/ContactServices";
+import {
+  ContactListJson,
+  DeleteContactJson,
+} from "../../services/ContactServices";
 import CustomButton from "../../components/Button";
 import Popup from "../../components/Popup";
 import ContactForm from "./AddContact";
@@ -26,6 +29,8 @@ function CardDetail() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [ContactToEdit, setContactToEdit] = useState<Contacts | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [isConfirmPopupOpen, setisConfirmPopupOpen] = useState(false);
+  const [ContactToDelete, setContactToDelete] = useState<Contacts | null>(null);
 
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
@@ -50,6 +55,28 @@ function CardDetail() {
       });
   }
 
+  const handleDeleteContact = (id: string) => {
+    const contactToDelete = contacts.find((contact) => contact.id === id);
+    if (contactToDelete) {
+      setContactToDelete(contactToDelete);
+      setisConfirmPopupOpen(true);
+    }
+  };
+
+  const ConfirmDeleteContact = () => {
+    if (ContactToDelete) {
+      DeleteContactJson(ContactToDelete.id).then(() => {
+        setContacts((prevContacts) =>
+          prevContacts.filter((contact) => contact.id !== ContactToDelete!.id)
+        );
+        setisConfirmPopupOpen(false);
+        setContactToDelete(null);
+        setSnackbarMessage("Successfully Deleted");
+        setSnackbarOpen(true);
+      });
+    }
+  };
+
   const handleEditContact = (contact: Contacts) => {
     setContactToEdit(contact);
     setIsPopupOpen(true);
@@ -73,6 +100,10 @@ function CardDetail() {
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
+  };
+
+  const handleCloseConfirmPopup = () => {
+    setisConfirmPopupOpen(false);
   };
 
   return (
@@ -104,6 +135,11 @@ function CardDetail() {
               buttonText={"Edit"}
               buttonClick={() => handleEditContact(contact)} // Pass the contact object when the button is clicked
             />
+            <CustomButton
+              variant={"text"}
+              buttonText={"Delete"}
+              buttonClick={() => handleDeleteContact(contact.id)} // Pass the contact object when the button is clicked
+            />
           </Card>
         </Grid>
       ))}
@@ -122,6 +158,55 @@ function CardDetail() {
               throw new Error("Function not implemented.");
             }}
           />
+        </Popup>
+      )}
+      {isConfirmPopupOpen && (
+        <Popup
+          open={isConfirmPopupOpen}
+          onClose={handleCloseConfirmPopup}
+          title={`Delete Contact ${
+            ContactToDelete ? ContactToDelete.name : ""
+          }?`}
+          customWidth={400}
+        >
+          <Grid container spacing={2}>
+            <Grid
+              item
+              xs={6}
+              style={{ display: "flex", justifyContent: "center" }}
+            >
+              <Button
+                variant={"outlined"}
+                style={{
+                  fontSize: "medium",
+                  borderRadius: "20px",
+                  color: "white",
+                  backgroundColor: "blue",
+                  width: "100%",
+                }}
+                onClick={ConfirmDeleteContact}
+              >
+                Yes
+              </Button>
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              style={{ display: "flex", justifyContent: "center" }}
+            >
+              <Button
+                variant={"outlined"}
+                style={{
+                  fontSize: "medium",
+                  borderRadius: "20px",
+                  width: "100%",
+                }}
+                onClick={handleCloseConfirmPopup}
+              >
+                No
+              </Button>
+            </Grid>
+          </Grid>
         </Popup>
       )}
       <CustomSnackBar
