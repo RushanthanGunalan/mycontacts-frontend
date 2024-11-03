@@ -7,6 +7,7 @@ import {
   Button,
 } from "@mui/material";
 import Profile from "../../assets/Profile.png";
+import NoDataImage from "../../assets/NoDataImage.gif";
 import { useEffect, useState } from "react";
 import {
   ContactListJson,
@@ -94,10 +95,6 @@ function CardDetail() {
     setSnackbarOpen(true);
   };
 
-  const handleOpenPopup = () => {
-    setIsPopupOpen(true);
-  };
-
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
@@ -107,42 +104,104 @@ function CardDetail() {
   };
 
   return (
-    <Grid container spacing={2} style={{ padding: "20px" }}>
-      {contacts.map((contact) => (
-        <Grid item xs={12} sm={6} md={3} key={contact.id}>
-          {" "}
-          {/* 4 cards per row (md = 3, meaning 12/3 = 4 columns) */}
-          <Card sx={{ maxWidth: 345 }}>
+    <Grid
+      container
+      spacing={2}
+      style={{
+        padding: "20px",
+        justifyContent: "center", // Center horizontally if no contacts
+        alignItems: "center", // Center vertically if no contacts
+        height: "100vh", // Full height when no contacts
+        display: "flex", // Use flexbox to center when no contacts
+      }}
+    >
+      {contacts.length === 0 ? (
+        // Display No Data Available Image or 404 Message
+        <Grid item xs={12} style={{ textAlign: "center" }}>
+          <Card
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center", // Center image and text horizontally
+              justifyContent: "center", // Center content vertically within the card
+            }}
+          >
             <CardMedia
               component="img"
-              image={Profile}
-              alt="Contact Image"
-              sx={{ height: 140 }}
+              image={NoDataImage} // Image to show when no data is available
+              alt="No Data Available"
+              sx={{
+                height: 300, // Set a reasonable height
+                width: 300, // Adjust the width to match the image size
+              }}
             />
             <CardContent>
-              <Typography variant="h6" component="div">
-                {contact.name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Phone: {contact.phone}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Email: {contact.email}
+              <Typography variant="h5" color="text.secondary">
+                No Contacts Available
               </Typography>
             </CardContent>
-            <CustomButton
-              variant={"text"}
-              buttonText={"Edit"}
-              buttonClick={() => handleEditContact(contact)} // Pass the contact object when the button is clicked
-            />
-            <CustomButton
-              variant={"text"}
-              buttonText={"Delete"}
-              buttonClick={() => handleDeleteContact(contact.id)} // Pass the contact object when the button is clicked
-            />
           </Card>
         </Grid>
-      ))}
+      ) : (
+        contacts.map((contact) => (
+          <Grid item xs={12} sm={6} md={3} key={contact.id}>
+            <Card sx={{ maxWidth: 345 }}>
+              <CardMedia
+                component="img"
+                image={Profile}
+                alt="Contact Image"
+                sx={{ height: 140 }}
+              />
+              <CardContent>
+                <Typography variant="h6" component="div">
+                  {contact.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Phone: {contact.phone}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Email: {contact.email}
+                </Typography>
+              </CardContent>
+              <Grid
+                container
+                item
+                xs={12}
+                padding={2}
+                spacing={2}
+                style={{ alignContent: "center" }}
+              >
+                <Grid item xs={6}>
+                  <CustomButton
+                    variant={"outlined"}
+                    buttonText={"Edit"}
+                    buttonClick={() => handleEditContact(contact)}
+                    style={{
+                      fontSize: "medium",
+                      borderRadius: "20px",
+                      color: "white",
+                      backgroundColor: "blue",
+                      width: "100%",
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <CustomButton
+                    variant={"outlined"}
+                    buttonText={"Delete"}
+                    buttonClick={() => handleDeleteContact(contact.id)}
+                    style={{
+                      fontSize: "medium",
+                      borderRadius: "20px",
+                      width: "100%",
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </Card>
+          </Grid>
+        ))
+      )}
       {isPopupOpen && (
         <Popup
           open={isPopupOpen}
@@ -154,7 +213,7 @@ function CardDetail() {
             onClose={handleClosePopup}
             onUpdate={handleUpdateContact}
             contact={ContactToEdit}
-            onAdd={function (contact: any): void {
+            onAdd={function (): void {
               throw new Error("Function not implemented.");
             }}
           />
