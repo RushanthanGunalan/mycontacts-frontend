@@ -5,6 +5,7 @@ import { useState } from "react";
 import "./App.css";
 import ContactsList from "./pages/Contacts/ContactsList";
 import CardDetail from "./pages/Contacts/CardDetails";
+import FavContact from "./pages/Contacts/FavouriteContacts";
 
 // Dummy Home component for the default route
 const Home = () => <h1>Home Page Content</h1>;
@@ -34,6 +35,7 @@ function App() {
               component={Link}
               to="/contactsDetail"
             />
+            <Tab label="Favourites" component={Link} to="/favContact" />
           </Tabs>
         </div>
 
@@ -42,6 +44,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/contacts" element={<ContactsList />} />
             <Route path="/contactsDetail" element={<CardDetail />} />
+            <Route path="/favContact" element={<FavContact />} />
           </Routes>
         </main>
       </div>
