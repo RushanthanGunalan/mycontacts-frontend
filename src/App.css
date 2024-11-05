@@ -9,6 +9,10 @@
   background-color: rgb(10, 91, 122); /* Background color for the tab area */
 }
 
+.tabs-slices {
+  padding: 10px;
+}
+
 .content {
   flex-grow: 1;
   padding: 20px;
