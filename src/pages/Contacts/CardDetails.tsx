@@ -5,6 +5,7 @@ import {
   Typography,
   Grid,
   Button,
+  IconButton,
 } from "@mui/material";
 import Profile from "../../assets/Profile.png";
 import NoDataImage from "../../assets/NoDataImage.gif";
@@ -17,12 +18,14 @@ import CustomButton from "../../components/Button";
 import Popup from "../../components/Popup";
 import ContactForm from "./AddContact";
 import CustomSnackBar from "../../components/SnackBar";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 
 interface Contacts {
   id: string;
   name: string;
   email: string;
   phone: string;
+  favorite?: boolean; // Optional favorite property for toggle
 }
 
 function CardDetail() {
@@ -93,6 +96,16 @@ function CardDetail() {
     setContactToEdit(null);
     setSnackbarMessage("Contacts Successfully Updated");
     setSnackbarOpen(true);
+  };
+
+  const handleToggleFavorite = (id: string) => {
+    setContacts((prevContacts) =>
+      prevContacts.map((contact) =>
+        contact.id === id
+          ? { ...contact, favorite: !contact.favorite }
+          : contact
+      )
+    );
   };
 
   const handleClosePopup = () => {
@@ -171,7 +184,7 @@ function CardDetail() {
                 spacing={2}
                 style={{ alignContent: "center" }}
               >
-                <Grid item xs={6}>
+                <Grid item xs={5}>
                   <CustomButton
                     variant={"outlined"}
                     buttonText={"Edit"}
@@ -185,7 +198,7 @@ function CardDetail() {
                     }}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={5}>
                   <CustomButton
                     variant={"outlined"}
                     buttonText={"Delete"}
@@ -196,6 +209,18 @@ function CardDetail() {
                       width: "100%",
                     }}
                   />
+                </Grid>
+                <Grid item xs={2}>
+                  <IconButton
+                    onClick={() => handleToggleFavorite(contact.id)} // Add the toggle function here
+                  >
+                    {contact.favorite ? (
+                      <Favorite color="error" />
+                    ) : (
+                      <FavoriteBorder />
+                    )}{" "}
+                    {/* Toggle the icon */}
+                  </IconButton>
                 </Grid>
               </Grid>
             </Card>

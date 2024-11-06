@@ -11,7 +11,7 @@ const CustomButton = ({
 }: {
   variant: "text" | "contained" | "outlined";
   style?: any;
-  buttonText: any;
+  buttonText?: any;
   iconStart?: JSX.Element;
   iconEnd?: JSX.Element;
   type?: any;
