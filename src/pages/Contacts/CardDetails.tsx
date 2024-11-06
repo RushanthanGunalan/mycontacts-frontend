@@ -218,7 +218,7 @@ function CardDetail() {
                       <Favorite color="error" />
                     ) : (
                       <FavoriteBorder />
-                    )}{" "}
+                    )}
                     {/* Toggle the icon */}
                   </IconButton>
                 </Grid>
