@@ -5,24 +5,28 @@ import {
   Typography,
   Grid,
   Button,
+  IconButton,
 } from "@mui/material";
 import Profile from "../../assets/Profile.png";
 import NoDataImage from "../../assets/NoDataImage.gif";
 import { useEffect, useState } from "react";
 import {
-  ContactListJson,
   DeleteContactJson,
+  FavoriteContactJson,
+  ToggleFavoriteContactJson,
 } from "../../services/ContactServices";
 import CustomButton from "../../components/Button";
 import Popup from "../../components/Popup";
 import ContactForm from "./AddContact";
 import CustomSnackBar from "../../components/SnackBar";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 
 interface Contacts {
   id: string;
   name: string;
   email: string;
   phone: string;
+  favorite?: boolean;
 }
 
 function FavContact() {
@@ -36,25 +40,57 @@ function FavContact() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
-    getAllContacts();
+    getFavoriteContacts();
   }, []);
 
-  function getAllContacts() {
-    ContactListJson()
+  // Function to get only the favorite contacts
+  function getFavoriteContacts() {
+    FavoriteContactJson()
       .then((response) => {
-        const dataWithId = response.data.map((contact: any) => ({
-          id: contact._id,
-          name: contact.name,
-          email: contact.email,
-          phone: contact.phone,
-        }));
-        setContacts(dataWithId);
+        const favoriteContacts = response.data
+          .filter((contact: any) => contact.isFavorite) // Keep only favorite contacts
+          .map((contact: any) => ({
+            id: contact._id,
+            name: contact.name,
+            email: contact.email,
+            phone: contact.phone,
+            favorite: contact.isFavorite,
+          }));
+        setContacts(favoriteContacts);
       })
       .catch((error) => {
-        console.error("There was an error fetching the contacts:", error);
-        // You can also display an error message to the user if needed
+        console.error("There was an error fetching favorite contacts:", error);
       });
   }
+
+  // Toggle the favorite status of the contact
+  const handleToggleFavorite = async (contactId: string) => {
+    try {
+      const updatedContact = await ToggleFavoriteContactJson(contactId);
+
+      // Update local state with the updated contact
+      setContacts((prevContacts) =>
+        prevContacts.map((contact) =>
+          contact.id === updatedContact._id
+            ? { ...contact, favorite: updatedContact.isFavorite }
+            : contact
+        )
+      );
+
+      getFavoriteContacts();
+
+      setSnackbarMessage(
+        updatedContact.isFavorite
+          ? "Added to Favorites"
+          : "Removed from Favorites"
+      );
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+      setSnackbarMessage("Failed to update favorite status");
+      setSnackbarOpen(true);
+    }
+  };
 
   const handleDeleteContact = (id: string) => {
     const contactToDelete = contacts.find((contact) => contact.id === id);
@@ -116,23 +152,22 @@ function FavContact() {
       }}
     >
       {contacts.length === 0 ? (
-        // Display No Data Available Image or 404 Message
         <Grid item xs={12} style={{ textAlign: "center" }}>
           <Card
             sx={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "center", // Center image and text horizontally
-              justifyContent: "center", // Center content vertically within the card
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <CardMedia
               component="img"
-              image={NoDataImage} // Image to show when no data is available
+              image={NoDataImage}
               alt="No Data Available"
               sx={{
-                height: 300, // Set a reasonable height
-                width: 300, // Adjust the width to match the image size
+                height: 300,
+                width: 300,
               }}
             />
             <CardContent>
@@ -197,6 +232,19 @@ function FavContact() {
                     }}
                   />
                 </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <IconButton onClick={() => handleToggleFavorite(contact.id)}>
+                    {contact.favorite ? (
+                      <Favorite color="error" />
+                    ) : (
+                      <FavoriteBorder />
+                    )}
+                  </IconButton>
+                </Grid>
               </Grid>
             </Card>
           </Grid>
@@ -229,11 +277,7 @@ function FavContact() {
           customWidth={400}
         >
           <Grid container spacing={2}>
-            <Grid
-              item
-              xs={6}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
+            <Grid item xs={6}>
               <Button
                 variant={"outlined"}
                 style={{
@@ -248,11 +292,7 @@ function FavContact() {
                 Yes
               </Button>
             </Grid>
-            <Grid
-              item
-              xs={6}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
+            <Grid item xs={6}>
               <Button
                 variant={"outlined"}
                 style={{

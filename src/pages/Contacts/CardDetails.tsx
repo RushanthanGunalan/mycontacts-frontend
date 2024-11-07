@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import {
   ContactListJson,
   DeleteContactJson,
+  ToggleFavoriteContactJson,
 } from "../../services/ContactServices";
 import CustomButton from "../../components/Button";
 import Popup from "../../components/Popup";
@@ -50,6 +51,7 @@ function CardDetail() {
           name: contact.name,
           email: contact.email,
           phone: contact.phone,
+          favorite: contact.isFavorite, // Include the favorite status from API
         }));
         setContacts(dataWithId);
       })
@@ -98,14 +100,31 @@ function CardDetail() {
     setSnackbarOpen(true);
   };
 
-  const handleToggleFavorite = (id: string) => {
-    setContacts((prevContacts) =>
-      prevContacts.map((contact) =>
-        contact.id === id
-          ? { ...contact, favorite: !contact.favorite }
-          : contact
-      )
-    );
+  // Function to toggle favorite status
+  const handleToggleFavorite = async (contactId: string) => {
+    try {
+      const updatedContact = await ToggleFavoriteContactJson(contactId);
+
+      // Update local state with the updated contact
+      setContacts((prevContacts) =>
+        prevContacts.map((contact) =>
+          contact.id === updatedContact._id
+            ? { ...contact, favorite: updatedContact.isFavorite }
+            : contact
+        )
+      );
+
+      setSnackbarMessage(
+        updatedContact.isFavorite
+          ? "Added to Favorites"
+          : "Removed from Favorites"
+      );
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+      setSnackbarMessage("Failed to update favorite status");
+      setSnackbarOpen(true);
+    }
   };
 
   const handleClosePopup = () => {
