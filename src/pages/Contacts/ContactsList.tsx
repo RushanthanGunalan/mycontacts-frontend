@@ -34,6 +34,7 @@ interface Contacts {
   name: string;
   email: string;
   phone: string;
+  image?: string;
 }
 
 function ContactsList() {
@@ -73,6 +74,9 @@ function ContactsList() {
           name: contact.name,
           email: contact.email,
           phone: contact.phone,
+          image: contact.image
+            ? `http://localhost:5001/${contact.image.replace(/\\/g, "/")}`
+            : null, // Handle path conversion and URL construction
         }));
         setContacts(dataWithId);
       })
@@ -410,10 +414,11 @@ function ContactsList() {
           <Card>
             <CardMedia
               component="img"
-              image={Profile} // Replace this with your fixed image URL
+              image={contactDetails?.image ? contactDetails.image : Profile} // If profileImage exists, use it; otherwise use Profile.png
               alt="Contact Image"
-              style={{ height: 300 }}
+              sx={{ height: 140 }}
             />
+
             <CardContent>
               <Typography variant="h5">{contactDetails?.name}</Typography>
               <Typography variant="subtitle1">

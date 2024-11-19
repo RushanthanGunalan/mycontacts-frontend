@@ -26,6 +26,7 @@ interface Contacts {
   name: string;
   email: string;
   phone: string;
+  image?: string;
   favorite?: boolean; // Optional favorite property for toggle
 }
 
@@ -52,12 +53,14 @@ function CardDetail() {
           email: contact.email,
           phone: contact.phone,
           favorite: contact.isFavorite, // Include the favorite status from API
+          image: contact.image
+            ? `http://localhost:5001/${contact.image.replace(/\\/g, "/")}`
+            : null, // Handle path conversion and URL construction
         }));
         setContacts(dataWithId);
       })
       .catch((error) => {
         console.error("There was an error fetching the contacts:", error);
-        // You can also display an error message to the user if needed
       });
   }
 
@@ -180,10 +183,11 @@ function CardDetail() {
             <Card sx={{ maxWidth: 345 }}>
               <CardMedia
                 component="img"
-                image={Profile}
+                image={contact.image ? contact.image : Profile} // If profileImage exists, use it; otherwise use Profile.png
                 alt="Contact Image"
                 sx={{ height: 140 }}
               />
+
               <CardContent>
                 <Typography variant="h6" component="div">
                   {contact.name}
