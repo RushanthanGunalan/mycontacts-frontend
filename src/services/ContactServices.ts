@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 
 const Contact_URL = "http://localhost:5001/api/contacts";
 
