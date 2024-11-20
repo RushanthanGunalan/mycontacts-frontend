@@ -28,24 +28,31 @@ const ContactForm = ({
     setImage(file);
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newContact = {
-      name,
-      email,
-      phone,
-      image,
-    };
+
+    // Create FormData for handling image uploads
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("phone", phone);
+
+    if (image && image instanceof File) {
+      formData.append("image", image); // Append only if there's a new image
+    }
 
     try {
       if (contact) {
-        await UpdateContactJson(contact.id, newContact);
-        onUpdate({ ...newContact, id: contact.id });
+        // Updating an existing contact
+        await UpdateContactJson(contact.id, formData); // Backend should accept FormData
+        onUpdate({ ...contact, name, email, phone, image }); // Update local state
       } else {
-        const addedContact = await AddContactJson(newContact);
-        onAdd(addedContact);
-        onClose();
+        // Adding a new contact
+        const addedContact = await AddContactJson(formData); // Handle new contact creation
+        onAdd(addedContact); // Pass the new contact back to the parent component
       }
+
+      onClose(); // Close the form modal
     } catch (error) {
       console.error("Error Adding/Updating Contact", error);
     }
