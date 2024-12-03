@@ -6,11 +6,15 @@ import {
   Grid,
   Button,
   IconButton,
+  Autocomplete,
+  Stack,
+  TextField,
 } from "@mui/material";
 import Profile from "../../assets/Profile.png";
 import NoDataImage from "../../assets/NoDataImage.gif";
 import { useEffect, useState } from "react";
 import {
+  AddContactJson,
   ContactListJson,
   DeleteContactJson,
   ToggleFavoriteContactJson,
@@ -19,7 +23,12 @@ import CustomButton from "../../components/Button";
 import Popup from "../../components/Popup";
 import ContactForm from "./AddContact";
 import CustomSnackBar from "../../components/SnackBar";
-import { Favorite, FavoriteBorder } from "@mui/icons-material";
+import {
+  AddIcCallOutlined,
+  Favorite,
+  FavoriteBorder,
+} from "@mui/icons-material";
+import { nanoid } from "nanoid";
 
 interface Contacts {
   id: string;
@@ -39,6 +48,9 @@ function CardDetail() {
   const [ContactToDelete, setContactToDelete] = useState<Contacts | null>(null);
 
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const [nameQuery, setNameQuery] = useState<string>("");
+  const [emailQuery, setEmailQuery] = useState<string>("");
 
   useEffect(() => {
     getAllContacts();
@@ -63,6 +75,23 @@ function CardDetail() {
         console.error("There was an error fetching the contacts:", error);
       });
   }
+
+  const handleAddContact = (newContact: Contacts) => {
+    newContact.id = nanoid(); // Generate a unique ID
+    AddContactJson(newContact)
+      .then(() => {
+        setContacts((prevContacts) => [...prevContacts, newContact]);
+        setSnackbarOpen(true);
+        setSnackbarMessage("Contact Successfully Added");
+        // Optionally, fetch all contacts again to ensure consistency
+      })
+      .catch((error) => {
+        console.error("Error adding contact:", error);
+
+        // Handle error appropriately (e.g., show error message)
+      });
+    getAllContacts();
+  };
 
   const handleDeleteContact = (id: string) => {
     const contactToDelete = contacts.find((contact) => contact.id === id);
@@ -130,6 +159,10 @@ function CardDetail() {
     }
   };
 
+  const handleOpenPopup = () => {
+    setIsPopupOpen(true);
+  };
+
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
@@ -139,191 +172,217 @@ function CardDetail() {
   };
 
   return (
-    <Grid
-      container
-      spacing={2}
-      style={{
-        padding: "20px",
-        justifyContent: "center", // Center horizontally if no contacts
-        alignItems: "center", // Center vertically if no contacts
-        height: "100vh", // Full height when no contacts
-        display: "flex", // Use flexbox to center when no contacts
-      }}
-    >
-      {contacts.length === 0 ? (
-        // Display No Data Available Image or 404 Message
-        <Grid item xs={12} style={{ textAlign: "center" }}>
-          <Card
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center", // Center image and text horizontally
-              justifyContent: "center", // Center content vertically within the card
-            }}
+    <>
+      {/* //Container and Text Field */}
+      <Grid
+        container
+        style={{
+          border: "1px solid black",
+          display: "flex",
+          alignItems: "center",
+          padding: "20px",
+        }}
+      >
+        <Grid
+          item
+          xs={2}
+          style={{ justifyContent: "center", alignItems: "center" }}
+        >
+          <Button
+            variant={"outlined"}
+            startIcon={<AddIcCallOutlined />}
+            style={{ fontSize: "medium", borderRadius: "20px" }}
+            onClick={handleOpenPopup}
           >
-            <CardMedia
-              component="img"
-              image={NoDataImage} // Image to show when no data is available
-              alt="No Data Available"
-              sx={{
-                height: 300, // Set a reasonable height
-                width: 300, // Adjust the width to match the image size
-              }}
-            />
-            <CardContent>
-              <Typography variant="h5" color="text.secondary">
-                No Contacts Available
-              </Typography>
-            </CardContent>
-          </Card>
+            Add Contact
+          </Button>
         </Grid>
-      ) : (
-        contacts.map((contact) => (
-          <Grid item xs={12} sm={6} md={3} key={contact.id}>
-            <Card sx={{ maxWidth: 345 }}>
+      </Grid>
+      {/* // */}
+      <Grid
+        container
+        spacing={2}
+        style={{
+          padding: "20px",
+          justifyContent: "center", // Center horizontally if no contacts
+          alignItems: "center", // Center vertically if no contacts
+          height: "100vh", // Full height when no contacts
+          display: "flex", // Use flexbox to center when no contacts
+        }}
+      >
+        {contacts.length === 0 ? (
+          // Display No Data Available Image or 404 Message
+          <Grid item xs={12} style={{ textAlign: "center" }}>
+            <Card
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center", // Center image and text horizontally
+                justifyContent: "center", // Center content vertically within the card
+              }}
+            >
               <CardMedia
                 component="img"
-                image={contact.image ? contact.image : Profile} // If profileImage exists, use it; otherwise use Profile.png
-                alt="Contact Image"
-                sx={{ height: 140 }}
+                image={NoDataImage} // Image to show when no data is available
+                alt="No Data Available"
+                sx={{
+                  height: 300, // Set a reasonable height
+                  width: 300, // Adjust the width to match the image size
+                }}
               />
-
               <CardContent>
-                <Typography variant="h6" component="div">
-                  {contact.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Phone: {contact.phone}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Email: {contact.email}
+                <Typography variant="h5" color="text.secondary">
+                  No Contacts Available
                 </Typography>
               </CardContent>
-              <Grid
-                container
-                item
-                xs={12}
-                padding={2}
-                spacing={2}
-                style={{ alignContent: "center" }}
-              >
-                <Grid item xs={5}>
-                  <CustomButton
-                    variant={"outlined"}
-                    buttonText={"Edit"}
-                    buttonClick={() => handleEditContact(contact)}
-                    style={{
-                      fontSize: "medium",
-                      borderRadius: "20px",
-                      color: "white",
-                      backgroundColor: "blue",
-                      width: "100%",
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={5}>
-                  <CustomButton
-                    variant={"outlined"}
-                    buttonText={"Delete"}
-                    buttonClick={() => handleDeleteContact(contact.id)}
-                    style={{
-                      fontSize: "medium",
-                      borderRadius: "20px",
-                      width: "100%",
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={2}>
-                  <IconButton
-                    onClick={() => handleToggleFavorite(contact.id)} // Add the toggle function here
-                  >
-                    {contact.favorite ? (
-                      <Favorite color="error" />
-                    ) : (
-                      <FavoriteBorder />
-                    )}
-                    {/* Toggle the icon */}
-                  </IconButton>
-                </Grid>
-              </Grid>
             </Card>
           </Grid>
-        ))
-      )}
-      {isPopupOpen && (
-        <Popup
-          open={isPopupOpen}
-          onClose={handleClosePopup}
-          title={ContactToEdit ? "Update Contact" : "Add Contact"}
-          customWidth={700}
-        >
-          <ContactForm
+        ) : (
+          contacts.map((contact) => (
+            <Grid item xs={12} sm={6} md={3} key={contact.id}>
+              <Card sx={{ maxWidth: 345 }}>
+                <CardMedia
+                  component="img"
+                  image={contact.image ? contact.image : Profile} // If profileImage exists, use it; otherwise use Profile.png
+                  alt="Contact Image"
+                  sx={{ height: 140 }}
+                />
+
+                <CardContent>
+                  <Typography variant="h6" component="div">
+                    {contact.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Phone: {contact.phone}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Email: {contact.email}
+                  </Typography>
+                </CardContent>
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  padding={2}
+                  spacing={2}
+                  style={{ alignContent: "center" }}
+                >
+                  <Grid item xs={5}>
+                    <CustomButton
+                      variant={"outlined"}
+                      buttonText={"Edit"}
+                      buttonClick={() => handleEditContact(contact)}
+                      style={{
+                        fontSize: "medium",
+                        borderRadius: "20px",
+                        color: "white",
+                        backgroundColor: "blue",
+                        width: "100%",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={5}>
+                    <CustomButton
+                      variant={"outlined"}
+                      buttonText={"Delete"}
+                      buttonClick={() => handleDeleteContact(contact.id)}
+                      style={{
+                        fontSize: "medium",
+                        borderRadius: "20px",
+                        width: "100%",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <IconButton
+                      onClick={() => handleToggleFavorite(contact.id)} // Add the toggle function here
+                    >
+                      {contact.favorite ? (
+                        <Favorite color="error" />
+                      ) : (
+                        <FavoriteBorder />
+                      )}
+                      {/* Toggle the icon */}
+                    </IconButton>
+                  </Grid>
+                </Grid>
+              </Card>
+            </Grid>
+          ))
+        )}
+        {isPopupOpen && (
+          <Popup
+            open={isPopupOpen}
             onClose={handleClosePopup}
-            onUpdate={handleUpdateContact}
-            contact={ContactToEdit}
-            onAdd={function (): void {
-              throw new Error("Function not implemented.");
-            }}
-          />
-        </Popup>
-      )}
-      {isConfirmPopupOpen && (
-        <Popup
-          open={isConfirmPopupOpen}
-          onClose={handleCloseConfirmPopup}
-          title={`Delete Contact ${
-            ContactToDelete ? ContactToDelete.name : ""
-          }?`}
-          customWidth={400}
-        >
-          <Grid container spacing={2}>
-            <Grid
-              item
-              xs={6}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
-              <Button
-                variant={"outlined"}
-                style={{
-                  fontSize: "medium",
-                  borderRadius: "20px",
-                  color: "white",
-                  backgroundColor: "blue",
-                  width: "100%",
-                }}
-                onClick={ConfirmDeleteContact}
+            title={ContactToEdit ? "Update Contact" : "Add Contact"}
+            customWidth={700}
+          >
+            <ContactForm
+              onClose={handleClosePopup}
+              onUpdate={handleUpdateContact}
+              contact={ContactToEdit}
+              onAdd={handleAddContact}
+            />
+          </Popup>
+        )}
+        {isConfirmPopupOpen && (
+          <Popup
+            open={isConfirmPopupOpen}
+            onClose={handleCloseConfirmPopup}
+            title={`Delete Contact ${
+              ContactToDelete ? ContactToDelete.name : ""
+            }?`}
+            customWidth={400}
+          >
+            <Grid container spacing={2}>
+              <Grid
+                item
+                xs={6}
+                style={{ display: "flex", justifyContent: "center" }}
               >
-                Yes
-              </Button>
-            </Grid>
-            <Grid
-              item
-              xs={6}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
-              <Button
-                variant={"outlined"}
-                style={{
-                  fontSize: "medium",
-                  borderRadius: "20px",
-                  width: "100%",
-                }}
-                onClick={handleCloseConfirmPopup}
+                <Button
+                  variant={"outlined"}
+                  style={{
+                    fontSize: "medium",
+                    borderRadius: "20px",
+                    color: "white",
+                    backgroundColor: "blue",
+                    width: "100%",
+                  }}
+                  onClick={ConfirmDeleteContact}
+                >
+                  Yes
+                </Button>
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                style={{ display: "flex", justifyContent: "center" }}
               >
-                No
-              </Button>
+                <Button
+                  variant={"outlined"}
+                  style={{
+                    fontSize: "medium",
+                    borderRadius: "20px",
+                    width: "100%",
+                  }}
+                  onClick={handleCloseConfirmPopup}
+                >
+                  No
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
-        </Popup>
-      )}
-      <CustomSnackBar
-        open={snackbarOpen}
-        message={snackbarMessage}
-        onClose={() => setSnackbarOpen(false)}
-        duration={3000}
-        position={{ vertical: "top", horizontal: "right" }}
-      />
-    </Grid>
+          </Popup>
+        )}
+        <CustomSnackBar
+          open={snackbarOpen}
+          message={snackbarMessage}
+          onClose={() => setSnackbarOpen(false)}
+          duration={3000}
+          position={{ vertical: "top", horizontal: "right" }}
+        />
+      </Grid>
+    </>
   );
 }
 
