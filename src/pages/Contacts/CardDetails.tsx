@@ -49,9 +49,6 @@ function CardDetail() {
 
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const [nameQuery, setNameQuery] = useState<string>("");
-  const [emailQuery, setEmailQuery] = useState<string>("");
-
   useEffect(() => {
     getAllContacts();
   }, []);
