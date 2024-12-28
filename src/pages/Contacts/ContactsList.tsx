@@ -4,6 +4,7 @@ import ContactForm from "./AddContact";
 import {
   AddIcCallOutlined,
   Delete,
+  DeleteOutline,
   Edit,
   Visibility,
 } from "@mui/icons-material";
@@ -257,7 +258,7 @@ function ContactsList() {
           padding: "20px",
         }}
       >
-        <Grid item xs={3}>
+        <Grid item xs={5}>
           <Stack sx={{ width: 300, padding: "10px" }}>
             <Autocomplete
               freeSolo
@@ -288,42 +289,38 @@ function ContactsList() {
 
         <Grid
           item
-          xs={2}
+          xs={1}
           style={{ justifyContent: "center", alignItems: "center" }}
         >
           <Button
             variant={"outlined"}
             startIcon={<AddIcCallOutlined />}
-            style={{ fontSize: "medium", borderRadius: "20px" }}
+            style={{ fontSize: "large", borderRadius: "20px" }}
             onClick={handleOpenPopup}
-          >
-            Add Contact
-          </Button>
+          />
         </Grid>
         {selectedContacts.length > 0 ? (
-          <Grid item xs={2}>
+          <Grid item xs={1}>
             <Button
               variant={"outlined"}
               style={{ fontSize: "medium", borderRadius: "20px" }}
               onClick={DeleteMultiContacts}
-            >
-              Delete Selected
-            </Button>
+              startIcon={<DeleteOutline />}
+            />
           </Grid>
         ) : (
-          <Grid item xs={2}>
+          <Grid item xs={1}>
             <Button
               variant={"outlined"}
               style={{
                 fontSize: "medium",
                 borderRadius: "20px",
                 pointerEvents: "none", // Disable pointer events
-                opacity: 0.5, // Reduce opacity for disabled look
+                opacity: 0.9, // Reduce opacity for disabled look
               }}
+              startIcon={<DeleteOutline />}
               disabled
-            >
-              Delete Selected
-            </Button>
+            />
           </Grid>
         )}
       </Grid>
